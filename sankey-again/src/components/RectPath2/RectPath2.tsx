@@ -4,7 +4,7 @@ import { Types } from './types'
 
 
 
-const RectPath = () /* or ( props : IBasicProps ) */ => {
+const RectPath2 = () /* or ( props : IBasicProps ) */ => {
 
   useEffect(() => {
     draw()
@@ -109,8 +109,9 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
 }
 
   const draw = () => {
+    //draw svg
     const svg = d3
-  .select(".RectPath")
+  .select(".RectPath2")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -246,7 +247,7 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
                   }})]).then((data) => {
       
     
-      //1. draw svg
+      //1. draw flows(links)
       svg
       .selectAll(".class1")
       .data(data[3])
@@ -429,8 +430,8 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
       .attr('stroke-width', 1)
 
 
-      
-      //Function node(rect)
+      // 3. draw rect ndoes
+      // 3.1 Function node (rect)
         const Rect2 = svg
         .selectAll('.rect2')
         .data(data[1])
@@ -455,7 +456,7 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
           .attr("text-anchor", "middle")
           .attr("tranform", null)
           .attr('fill','white')
-          .attr("style", "writing-mode:tb; letter-spacing:0px" ) //transfer words into verticle type 
+          .attr("style", "writing-mode:tb; letter-spacing:0px" ) //transfer texts into verticle type 
           .style("font-size", "14px")
           .text(function(d) { return d.node; })
 
@@ -473,7 +474,7 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
           .attr('x', d => +d.dx-5)
           .attr("text-anchor", "end")
 
-      // Themes node(rect)    
+      // 3.2 Themes node (rect)    
           const Rect3 = svg
           .selectAll('.rect3')
           .data(data[2])
@@ -522,7 +523,7 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
   }
 
   return (
-    <div className="RectPath">
+    <div className="RectPath2">
       <svg>
      <filter id="inset-shadow"> //filter to create inset shadow for rectangle style
     <feOffset dx="0" dy="1"/>
@@ -544,4 +545,4 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
 //}
 
 
-export default RectPath
+export default RectPath2

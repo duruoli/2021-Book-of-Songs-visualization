@@ -1,0 +1,452 @@
+//copy都是没啥用的，只是做的时候留了个之前版本备份哈哈哈
+
+import React, { useState, useEffect, RefObject } from 'react'
+import * as d3 from  "d3" 
+import { Types } from './types'
+
+
+
+const Glyph = () /* or ( props : IBasicProps ) */ => {
+
+  useEffect(() => {
+    draw()
+  })
+
+//svg parameters
+  const margin = {top: 10, right: 30, bottom: 10, left: 30}
+  
+  const width = 1400 - margin.left - margin.right
+  const height = 600 - margin.top - margin.bottom
+
+  
+  //sunburnst para
+  const R = 100
+  const cx_sh = 200+margin.left
+  const cy_sh = 200+margin.top
+
+  const gap = (2/180)*Math.PI //slight modification
+ 
+
+  
+  //functions to draw ring(arc)--Generation node
+  const polarToCartesian = (centerX: number, centerY: number, radius: number, angle: number) => {
+    var angleInRadians = angle-Math.PI/2-2*Math.PI/3;
+  
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+ 
+
+  //sunburnst outer ring path function
+  const  Arc = (d: Types.glyEmoType|Types.glyFunType|Types.glyTheType|Types.glyGenType, cx: number, cy: number) => {
+
+    var start1 = polarToCartesian(cx, cy, +d.r1, +d.a1);
+    var end1 = polarToCartesian(cx, cy, +d.r1, +d.a2);
+    var start2 = polarToCartesian(cx, cy, +d.r2, +d.a1);
+    var end2 = polarToCartesian(cx, cy, +d.r2, +d.a2);
+
+    var largeArcFlag = (+d.a2) - (+d.a1) <= Math.PI ? "0" : "1";
+
+    var arc = [
+        "M", start2.x, start2.y, 
+        "A", +d.r2, +d.r2, 0, largeArcFlag, 1, end2.x, end2.y,
+        "L", end1.x, end1.y, 
+        "A", +d.r1, +d.r1, 0, largeArcFlag, 0, start1.x, start1.y,
+        "L", start2.x, start2.y
+    ].join(" ");
+
+    return arc;       
+}
+
+const  Relate = (d: Types.glyRelateType, cx: number, cy: number) => {
+
+  var center = polarToCartesian(cx, cy, R, ((+d.a1)+(+d.a2))/2);
+
+  return {
+    rx: center.x,
+    ry: center.y
+  };       
+}
+
+  const draw = () => {
+    //draw svg
+    const svg = d3
+  .select(".Glyph")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", 
+        "translate(" + margin.left + "," + margin.top + ")")
+
+//import csv data 
+    Promise.all([d3.dsv(',' , "/data/glyph/黍/glyph_黍1.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyEmoType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/黍/glyph_黍2.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyTheType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill,
+        op: res1.op
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/黍/glyph_黍3.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyFunType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        Function: res1.Function,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill,
+        op: res1.op
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/黍/glyph_黍4.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyGenType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        Function: res1.Function,
+        Genre: res1.Genre,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill
+      }
+      
+    }), 
+    //2) all the image
+    d3.dsv(',' , "/data/glyph/image/glyph_image.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyImageType //declare the data type
+      return {
+        name: res1.name,
+        dir: res1.dir,
+        cx: res1.cx,
+        cy: res1.cy
+      }
+      
+    }), 
+    //1.2)relate-shu
+    d3.dsv(',' , '/data/glyph/image/黍/relate_sh.csv', (d) => {      //Promise.all() used to import multiple data sets
+      const res5 = (d as unknown) as Types.glyRelateType //declare the data type
+      return {
+        name: res5.name,
+        n: res5.n,
+        a1: res5.a1,
+        a2: res5.a2,
+        r: res5.r,
+        ratio: res5.ratio
+
+      }
+      
+    }), 
+    //3) 桑
+    d3.dsv(',' , "/data/glyph/桑/glyph_桑1.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyEmoType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/桑/glyph_桑2.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyTheType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill,
+        op: res1.op
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/桑/glyph_桑3.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyFunType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        Function: res1.Function,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill,
+        op: res1.op
+      }
+      
+    }), d3.dsv(',' , "/data/glyph/桑/glyph_桑4.csv", (d) => {      //Promise.all() used to import multiple data sets
+      const res1 = (d as unknown) as Types.glyGenType //declare the data type
+      return {
+        Emotion: res1.Emotion,
+        Theme: res1.Theme,
+        Function: res1.Function,
+        Genre: res1.Genre,
+        n1: res1.n1,
+        r: res1.r,
+        a1: res1.a1,
+        a2: res1.a2,
+        height: res1.height,
+        r2: res1.r2,
+        r1: res1.r1,
+        fill: res1.fill
+      }
+      
+    }) ]).then((data) => {
+      
+    console.log('data[0]:',data)
+
+
+
+      //1.image
+    const image = svg
+      .selectAll('.image1')
+      .data(data[4])
+      .enter()
+      .append("pattern")
+      .attr("id",d => d.name)
+      .attr("x", "0")
+      .attr("y", "0")
+      .attr("height",1)
+      .attr('width',1)
+      .attr('viewBox', '0 0 1 1') // control the relative size of image to outer frame
+      .append("image")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("height", 1)
+        .attr("width", 1)
+        .attr("xlink:href", d =>(console.log("dir:",d.dir) ,d.dir))
+
+
+    svg
+      .selectAll('.circle_back')
+      .data(data[4])
+      .enter()
+      .append('circle')
+      .attr('cx', d => +d.cx + margin.left)
+      .attr('cy', d => +d.cy + margin.top)
+      .attr('r', 100)
+      .attr('fill', d =>
+         ("url(#" + d.name + ")")
+        )
+      .attr("fill-opacity", 0.1)
+    
+    svg
+      .selectAll('.circle_up1')
+      .data(data[4])
+      .enter()
+      .append('circle')
+      .attr('cx', d => +d.cx + margin.left)
+      .attr('cy', d => +d.cy + margin.top)
+      .attr('r', 100*7/16)
+      .attr('fill', d =>
+         ("url(#" + d.name + ")")
+        )
+      .attr("fill-opacity", 0.4)
+
+    svg
+      .selectAll('.circle_up2')
+      .data(data[4])
+      .enter()
+      .append('circle')
+      .attr('cx', d => +d.cx + margin.left)
+      .attr('cy', d => +d.cy + margin.top)
+      .attr('r', 100*7/16-2)
+      .attr('fill', d =>
+         ("url(#" + d.name + ")")
+        )
+      .attr("fill-opacity", 0.9)
+ 
+      //1.1 黍_relate
+      //down
+    const image_shu = svg
+      .selectAll('.relate_shu')
+      .data(data[5])
+      .enter()
+      .append("pattern")
+      .attr("id",d => (console.log("name:",d.name), d.name))
+      .attr("x", "0")
+      .attr("y", "0")
+      .attr("height",1)
+      .attr('width',1)
+      .attr('viewBox', '0 0 1 1') // control the relative size of image to outer frame
+      .append("image")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("height", 1)
+        .attr("width", 1)
+        .attr("xlink:href", d => ("/data/glyph/image/黍/"+d.name+".png"))
+      
+      svg
+        .selectAll('.circle_down')
+        .data(data[5])
+        .enter()
+        .append('circle')
+        .attr('cx', d => Relate(d, cx_sh, cy_sh).rx)
+        .attr('cy', d => Relate(d, cx_sh, cy_sh).ry)
+        .attr('r', d => +d.r)
+        .attr('fill', d =>
+           ("url(#" + d.name + ")")
+          )
+        .attr("fill-opacity", 0.4)
+      
+      //up
+      svg
+        .selectAll('.circle_down')
+        .data(data[5])
+        .enter()
+        .append('circle')
+        .attr('cx', d => Relate(d, +cx_sh, +cy_sh).rx)
+        .attr('cy', d => Relate(d, +cx_sh, +cy_sh).ry)
+        .attr('r', d => +d.r-2)
+        .attr('fill', d =>
+           ("url(#" + d.name + ")")
+          )
+        .attr("fill-opacity", 0.9)
+      
+      //2.1 黍 0-3
+      
+      svg
+      .selectAll(".glyph1_1")
+      .data(data[0])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, cx_sh, cy_sh))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", 0.8)
+
+   
+      svg
+      .selectAll(".glyph1_2")
+      .data(data[1])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh, +cy_sh))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", d => d.op)
+
+      svg
+      .selectAll(".glyph1_3")
+      .data(data[2])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh, +cy_sh))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", d => d.op)
+
+      svg
+      .selectAll(".glyph1_4")
+      .data(data[3])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, cx_sh, cy_sh))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", 0.8)
+
+      //2.2 桑 6-9
+      
+      svg
+      .selectAll(".glyph2_1")
+      .data(data[6])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh+2*R, +cy_sh+2*R))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", 0.8)
+
+   
+      svg
+      .selectAll(".glyph2_2")
+      .data(data[7])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh+2*R, +cy_sh+2*R))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", d => d.op)
+
+      svg
+      .selectAll(".glyph2_3")
+      .data(data[8])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh+2*R, +cy_sh+2*R))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", d => d.op)
+
+      svg
+      .selectAll(".glyph2_4")
+      .data(data[9])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh+2*R, +cy_sh+2*R))
+      .attr('fill', d => d.fill)
+      .attr("fill-opacity", 0.8)
+      
+
+
+    
+    
+     
+    })
+    
+  }
+
+  return (
+    <div className="Glyph">
+    </div>
+
+  )
+}
+
+
+//interface IBasicProps {
+  // TODO
+//}
+
+
+export default Glyph

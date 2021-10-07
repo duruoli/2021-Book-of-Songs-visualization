@@ -5,7 +5,7 @@ import { Types } from './types'
 
 
 
-const RectPath = () /* or ( props : IBasicProps ) */ => {
+const RectPath1 = () /* or ( props : IBasicProps ) */ => {
 
   useEffect(() => {
     draw()
@@ -45,7 +45,7 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
 
     //1. draw svg
     const svg = d3
-  .select(".RectPath")
+  .select(".RectPath1")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -142,12 +142,11 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
     })
 
 
-    console.log('link:', link)
     
   }
 
   return (
-    <div className="RectPath">
+    <div className="RectPath1">
       <svg>
      <filter id="inset-shadow"> //filter to create inset shadow for rectangle style
     <feOffset dx="0" dy="1"/>
@@ -169,4 +168,4 @@ const RectPath = () /* or ( props : IBasicProps ) */ => {
 //}
 
 
-export default RectPath
+export default RectPath1
