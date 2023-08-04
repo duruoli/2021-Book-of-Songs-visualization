@@ -16,7 +16,9 @@ Our project pursues this very objective, conducting a content analysis on all 30
 The part I am responsible for involves creating *Glyph* figures for the images, and *Sankey diagrams* for the content.
 
 # Code
-The complete project code is in the **master** branch. The major codes of the components are shown in "code-component" file in the **main** brunch, and the code of analysis of contents and metaphors is in the "code-analysis" file.
+1. The complete project code is in the **master** branch
+2. The major codes of the components are shown in "code-component" file in the **main** brunch
+3. The code of analysis of contents and metaphors is in the "code-analysis" file.
 
 
 
