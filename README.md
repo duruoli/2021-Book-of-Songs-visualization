@@ -11,11 +11,12 @@ The question then arises: **How can we enable ordinary people to appreciate the 
 
 Visualization is arguably the best method. By transforming the content into images, we can dissolve the comprehension barriers brought about by the text, allowing people to intuitively understand the poems' connotations, metaphors, and feel their elevated aesthetic value.
 
-Our project pursues this very objective, conducting a content analysis on all 305 poems in The Book of Songs, including their themes, emotions, main ideas, and image analysis, and subsequently visualizing these results by building an interactive website with JavaScript.
+Our project pursues this very objective, conducting a content analysis on all 305 poems in *The Book of Songs*, including their themes, emotions, main ideas, and metaphor analysis, and subsequently visualizing these results by building an interactive website with JavaScript.
 
 The part I am responsible for involves creating *Glyph* figures for the images, and *Sankey diagrams* for the content.
 
-
+# Code
+The complete project code is in the **master** branch. The major codes of the components are shown in "code" file in the **main** brunch. The code of analysis of contents and metaphors is also in the "code" file (R file)
 
 
 
