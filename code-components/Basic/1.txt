@@ -1,0 +1,97 @@
+    return "M" + (+d.dx_k) + "," + (d.k1)
+    + "L" + (width/8+(+d.dx_k)) + "," + (+d.k1)
+    + "C" + (2*(width/8+(+d.dx_k))/5+3* ((+d.dx_z)-width/8)/5) + "," + (+d.k1)
+    + " " + (3*(width/8+(+d.dx_k))/5+2* ((+d.dx_z)-width/8)/5) + "," + (+d.z1)
+    + " " + ((+d.dx_z)-width/8) + "," + (+d.z1)
+    + "L" + (+d.dx_z) + "," + (+d.z1)
+    + "L" + (+d.dx_z) + "," + (+d.z2)
+    + "L" + ((+d.dx_z)-width/8) + "," + (+d.z2)
+    + "C" + (3*(width/8+(+d.dx_k))/5+2* ((+d.dx_z)-width/8)/5) + "," + (+d.z1)
+    + " " + (2*(width/8+(+d.dx_k))/5+3* ((+d.dx_z)-width/8)/5) + "," + (+d.k1)
+    + " " + (width/8+(+d.dx_k)) + "," + (+d.k2)
+    + "L"  + (+d.dx_k) + "," + (+d.k2)
+    + "L" + (+d.dx_k) + "," + (+d.k1)
+
+
+    export namespace Types { //different types for data 
+    export type glyEmoType = {
+        Emotion: string
+        n1: number
+        r: number
+        a1: number
+        a2: number
+        height: number
+        r2: number
+        r1: number
+    }
+
+    export type glyTheType = {
+        Emotion: string
+        Theme: string
+        n1: number
+        r: number
+        a1: number
+        a2: number
+        height: number
+        r2: number
+        r1: number
+    }
+
+    export type glyFunType = {
+        Emotion: string
+        Theme: string
+        Function: string
+        n1: number
+        r: number
+        a1: number
+        a2: number
+        height: number
+        r2: number
+        r1: number
+    }
+
+    export type glyGenType = {
+        Emotion: string
+        Theme: string
+        Function: string
+        Genre: string
+        n1: number
+        r: number
+        a1: number
+        a2: number
+        height: number
+        r2: number
+        r1: number
+    }
+
+    
+}
+
+
+  glyph1
+      .selectAll(".glyph1_2")
+      .data(data[1])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh, +cy_sh))
+      .attr('fill', "blue")
+      .attr("fill-opacity","0.15")
+
+      glyph1
+      .selectAll(".glyph1_3")
+      .data(data[2])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, +cx_sh, +cy_sh))
+      .attr('fill', "blue")
+      .attr("fill-opacity","0.15")
+
+      glyph1
+      .selectAll(".glyph1_4")
+      .data(data[3])
+      .enter()
+      .append("path")
+      .attr("d", d => Arc(d, cx_sh, cy_sh))
+      .attr('fill', "blue")
+      .attr("fill-opacity","0.15")
+      
