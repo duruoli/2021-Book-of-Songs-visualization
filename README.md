@@ -13,13 +13,15 @@ Visualization is arguably the best method. By transforming the content into imag
 
 Our project pursues this very objective, conducting a content analysis on all 305 poems in *The Book of Songs*, including their themes, emotions, main ideas, and metaphor analysis, and subsequently visualizing these results by building an interactive website with JavaScript.
 
-The part I am responsible for involves creating *icicle* figures for the images, and *Sankey diagrams* for the content.
+# Contribution: 
+1. Quantification analysis on the poems' contents
+2. Develop visual components: circular *icicle* figures for the images, and *Sankey diagrams* for the content.
 
 # Code
 1. The complete project code is in the **master** branch
 2. The major code for the components are shown in "code-component" file in the **main** brunch
 3. The code for analysis of contents and metaphors is in the "code-analysis" file in the **main** brunch
 
-
-
+# Website
+https://wangyifang.github.io/the-book-of-songs/ 
 
